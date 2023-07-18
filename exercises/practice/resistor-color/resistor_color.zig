@@ -1,7 +1,23 @@
+pub const ColorBand = enum(usize) {
+    black,
+    brown,
+    red,
+    orange,
+    yellow,
+    green,
+    blue,
+    violet,
+    grey,
+    white,
+};
+pub const ColorBandLen = 10;
+
 pub fn colorCode(color: ColorBand) usize {
-    @compileError("determine the value of a colorband on a resistor");
+    return @intFromEnum(color);
 }
 
 pub fn colors() []const ColorBand {
-    @compileError("refer to a collection of all resistor colorbands");
+    var cs: [ColorBandLen]ColorBand = undefined;
+    for (0..ColorBandLen) |c| cs[c] = @enumFromInt(c);
+    return &cs;
 }

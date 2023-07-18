@@ -8,5 +8,15 @@ pub const Counts = struct {
 };
 
 pub fn countNucleotides(s: []const u8) NucleotideError!Counts {
-    _ = s;
+    var counts = Counts{ .a = 0, .c = 0, .g = 0, .t = 0 };
+    for (s) |c| {
+        switch (c) {
+            'A' => counts.a += 1,
+            'C' => counts.c += 1,
+            'G' => counts.g += 1,
+            'T' => counts.t += 1,
+            else => return NucleotideError.Invalid,
+        }
+    }
+    return counts;
 }

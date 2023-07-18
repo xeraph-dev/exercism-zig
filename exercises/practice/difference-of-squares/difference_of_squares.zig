@@ -1,14 +1,22 @@
+const std = @import("std");
+const math = std.math;
+
 pub fn squareOfSum(number: usize) usize {
-    _ = number;
-    @compileError("compute the sum of i from 0 to n then square it");
+    var r: usize = 0;
+    for (0..(number + 1)) |n| {
+        r += n;
+    }
+    return math.pow(usize, r, 2);
 }
 
 pub fn sumOfSquares(number: usize) usize {
-    _ = number;
-    @compileError("compute the sum of i^2 from 0 to n");
+    var r: usize = 0;
+    for (0..(number + 1)) |n| {
+        r += math.pow(usize, n, 2);
+    }
+    return r;
 }
 
 pub fn differenceOfSquares(number: usize) usize {
-    _ = number;
-    @compileError("compute the difference between the square of sum and sum of squares");
+    return squareOfSum(number) - sumOfSquares(number);
 }
