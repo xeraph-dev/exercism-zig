@@ -1,42 +1,65 @@
 pub fn LinkedList(comptime T: type) type {
-    _ = T;
     return struct {
-        // Please implement the doubly linked `Node` (replacing each `void`).
+        const Self = @This();
+
         pub const Node = struct {
-            prev: void,
-            next: void,
-            data: void,
+            prev: ?*Node = null,
+            next: ?*Node = null,
+            data: T,
         };
 
-        // Please implement the fields of the linked list (replacing each `void`).
-        first: void,
-        last: void,
-        len: void,
+        first: ?*Node = null,
+        last: ?*Node = null,
+        len: usize = 0,
 
-        // Please implement the below methods.
-        // You need to add the parameters to each method.
-
-        pub fn push() void {
-            // Please implement this method.
+        pub fn push(self: *Self, node: *Node) void {
+            self.len += 1;
+            node.prev = self.last;
+            if (self.last) |last| last.next = node;
+            if (self.first == null) self.first = node;
+            self.last = node;
         }
 
-        pub fn pop() void {
-            // Please implement this method.
-            // It must return an optional pointer to a Node.
+        pub fn pop(self: *Self) ?*Node {
+            if (self.len > 0) self.len -= 1;
+            const node = self.last;
+            if (self.last) |last| {
+                last.next = null;
+                self.last = last.prev;
+            }
+            return node;
         }
 
-        pub fn shift() void {
-            // Please implement this method.
-            // It must return an optional pointer to a Node.
+        pub fn shift(self: *Self) ?*Node {
+            if (self.len > 0) self.len -= 1;
+            const node = self.first;
+            if (self.first) |first| {
+                first.prev = null;
+                self.first = first.next;
+            }
+            return node;
         }
 
-        pub fn unshift() void {
-            // Please implement this method.
+        pub fn unshift(self: *Self, node: *Node) void {
+            self.len += 1;
+            node.next = self.first;
+            if (self.first) |first| first.prev = node;
+            if (self.last == null) self.last = node;
+            self.first = node;
         }
 
-        pub fn delete() void {
-            // Please implement this method.
-            // It must modify the list only when it contains the given node.
+        pub fn delete(self: *Self, node: *Node) void {
+            var curr = self.first;
+            while (true) {
+                if (curr) |el| {
+                    if (el.data == node.data) {
+                        if (el.prev) |prev| prev.next = el.next else self.first = el.next;
+                        if (el.next) |next| next.prev = el.prev else self.last = el.prev;
+                        if (self.len > 0) self.len -= 1;
+                        break;
+                    } else curr = el.next;
+                } else break;
+            }
         }
     };
 }

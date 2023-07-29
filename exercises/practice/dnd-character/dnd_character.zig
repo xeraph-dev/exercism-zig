@@ -1,10 +1,23 @@
+const std = @import("std");
+
 pub fn modifier(score: i8) i8 {
-    _ = score;
-    @compileError("please implement the modifier function");
+    return @divFloor(score - 10, 2);
 }
 
 pub fn ability() i8 {
-    @compileError("please implement the ability function");
+    var prng = std.rand.DefaultPrng.init(blk: {
+        var seed: u64 = undefined;
+        std.os.getrandom(std.mem.asBytes(&seed)) catch unreachable;
+        break :blk seed;
+    });
+    var sum: i8 = 0;
+    var last: i8 = prng.random().intRangeAtMost(i8, 1, 6);
+    for (0..3) |_| {
+        const n = prng.random().intRangeAtMost(i8, 1, 6);
+        sum += @max(last, n);
+        last = n;
+    }
+    return sum;
 }
 
 pub const Character = struct {
@@ -17,6 +30,15 @@ pub const Character = struct {
     hitpoints: i8,
 
     pub fn init() Character {
-        @compileError("please implement the init method");
+        const constitution = ability();
+        return Character{
+            .strength = ability(),
+            .dexterity = ability(),
+            .constitution = constitution,
+            .intelligence = ability(),
+            .wisdom = ability(),
+            .charisma = ability(),
+            .hitpoints = 10 + modifier(constitution),
+        };
     }
 };

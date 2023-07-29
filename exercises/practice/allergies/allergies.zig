@@ -13,12 +13,19 @@ pub const Allergen = enum {
 };
 
 pub fn isAllergicTo(score: u8, allergen: Allergen) bool {
-    _ = score;
-    _ = allergen;
-    @compileError("please implement the isAllergicTo function");
+    return isFlipped(score, @as(u8, 1) << @intFromEnum(allergen));
 }
 
 pub fn initAllergenSet(score: usize) EnumSet(Allergen) {
-    _ = score;
-    @compileError("please implement the initAllergenSet function");
+    var set = EnumSet(Allergen).initEmpty();
+    const fixed: u8 = @truncate(score - 256 * @divFloor(score, 256));
+    for (0..8) |i| {
+        const allergen: Allergen = @enumFromInt(i);
+        if (isAllergicTo(fixed, allergen)) set.insert(allergen);
+    }
+    return set;
+}
+
+inline fn isFlipped(number: u8, bit_mask: u8) bool {
+    return (number & bit_mask) > 0;
 }
